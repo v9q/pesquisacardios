@@ -1,0 +1,9 @@
+Protótipo da nova pesquisa de satisfação Cardios
+
+Fluxo curto de 3 perguntas com ramificação por nota NPS, comentário único
+e fechamento de loop com o cliente, substituindo o formulário atual de
+~9 blocos repetidos. Inclui modo de teste para validar os caminhos sem
+dados reais.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01FuJgWzxor93WYT2SvFnrGJ

@@ -1,0 +1,879 @@
+<title>Pulso Cardios</title>
+<style>
+  :root{
+    --bg:#F8F8F8;
+    --surface:#FFFFFF;
+    --surface-2:#F1EBE4;
+    --ink:#262626;
+    --ink-soft:#736A60;
+    --ink-faint:#A79E93;
+    --line:#E6E0D7;
+    --line-strong:#D8D0C4;
+    --brand-1:#ED1C24;
+    --brand-2:#EE5B00;
+    --brand-3:#FF730B;
+    --brand-tint:#FDECE6;
+    --detractor:#D6455A;
+    --detractor-tint:#FBEAEC;
+    --neutral:#B9812A;
+    --neutral-tint:#FBF1E1;
+    --promoter:#2E9E5B;
+    --promoter-tint:#E7F5ED;
+    --focus:#EE5B00;
+    --shadow:rgba(38,26,15,0.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#17130F;
+      --surface:#231D18;
+      --surface-2:#2C2420;
+      --ink:#F4EEE7;
+      --ink-soft:#BCB0A2;
+      --ink-faint:#847A6E;
+      --line:#3B322B;
+      --line-strong:#4A3F36;
+      --brand-tint:#3A1E17;
+      --detractor:#FF8B96;
+      --detractor-tint:#3A2023;
+      --neutral:#F0C36B;
+      --neutral-tint:#392E1C;
+      --promoter:#6BE39C;
+      --promoter-tint:#1B3627;
+      --shadow:rgba(0,0,0,0.45);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#17130F;
+    --surface:#231D18;
+    --surface-2:#2C2420;
+    --ink:#F4EEE7;
+    --ink-soft:#BCB0A2;
+    --ink-faint:#847A6E;
+    --line:#3B322B;
+    --line-strong:#4A3F36;
+    --brand-tint:#3A1E17;
+    --detractor:#FF8B96;
+    --detractor-tint:#3A2023;
+    --neutral:#F0C36B;
+    --neutral-tint:#392E1C;
+    --promoter:#6BE39C;
+    --promoter-tint:#1B3627;
+    --shadow:rgba(0,0,0,0.45);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100%;
+  }
+  h1,h2,h3,.display{
+    font-family:"Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    text-wrap:balance;
+    margin:0;
+  }
+  .mono{
+    font-family:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-variant-numeric:tabular-nums;
+  }
+  img{max-width:100%;}
+  [hidden]{display:none !important;}
+  button{font:inherit;color:inherit;}
+  :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px;}
+
+  .brand-gradient{
+    background:linear-gradient(110deg, var(--brand-1) 0%, var(--brand-2) 50.3%, var(--brand-3) 100%);
+  }
+
+  .app{
+    max-width:520px;
+    margin:0 auto;
+    min-height:100%;
+    padding:0 20px 96px;
+    display:flex;
+    flex-direction:column;
+  }
+
+  header.top{
+    padding-block:22px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .wordmark{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+  }
+  .wordmark .mark{
+    font-family:"Plus Jakarta Sans", sans-serif;
+    font-weight:700;
+    font-size:1.05rem;
+    letter-spacing:-0.01em;
+  }
+  .wordmark .tag{
+    font-size:0.68rem;
+    color:var(--ink-soft);
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    border-left:1px solid var(--line-strong);
+    padding-left:8px;
+  }
+  .progress-track{
+    height:4px;
+    border-radius:4px;
+    background:var(--line);
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    border-radius:4px;
+    transition:width .45s ease;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .progress-fill{transition:none;}
+  }
+  .step-label{
+    font-size:0.72rem;
+    color:var(--ink-faint);
+    display:flex;
+    justify-content:space-between;
+  }
+
+  main{
+    flex:1;
+    display:flex;
+    align-items:center;
+  }
+  .screen{
+    width:100%;
+    animation:rise .38s ease both;
+  }
+  @keyframes rise{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .screen{animation:none;}
+  }
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:28px 24px;
+    box-shadow:0 12px 32px -18px var(--shadow);
+  }
+
+  .eyebrow{
+    font-size:0.72rem;
+    font-weight:600;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--brand-2);
+    margin-bottom:10px;
+  }
+  .q-title{
+    font-size:1.5rem;
+    font-weight:700;
+    line-height:1.28;
+    letter-spacing:-0.01em;
+  }
+  .q-sub{
+    margin-top:8px;
+    font-size:0.95rem;
+    color:var(--ink-soft);
+    line-height:1.5;
+  }
+  .context-note{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:14px;
+    padding:7px 12px;
+    background:var(--brand-tint);
+    border-radius:999px;
+    font-size:0.78rem;
+    color:var(--brand-2);
+    font-weight:500;
+  }
+  :root[data-theme="dark"] .context-note, @media (prefers-color-scheme: dark){ }
+
+  /* intro */
+  .intro-hero{
+    padding-top:6px;
+  }
+  .intro-hero h1{
+    font-size:2rem;
+    line-height:1.18;
+    letter-spacing:-0.015em;
+  }
+  .intro-hero p{
+    margin-top:14px;
+    font-size:1.02rem;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+  .meta-row{
+    display:flex;
+    gap:18px;
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+  }
+  .meta-item{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .meta-item .n{
+    font-size:1.15rem;
+    font-weight:600;
+  }
+  .meta-item .l{
+    font-size:0.72rem;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+
+  .btn{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    border-radius:12px;
+    padding:14px 20px;
+    font-size:0.96rem;
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+    transition:transform .15s ease, filter .15s ease;
+  }
+  .btn:active{transform:scale(0.98);}
+  @media (prefers-reduced-motion: reduce){ .btn{transition:none;} .btn:active{transform:none;} }
+  .btn-primary{
+    color:#fff;
+    background:linear-gradient(110deg, var(--brand-1) 0%, var(--brand-2) 50.3%, var(--brand-3) 100%);
+  }
+  .btn-primary:hover{filter:brightness(1.05);}
+  .btn-primary:disabled{opacity:0.45; cursor:not-allowed;}
+  .btn-ghost{
+    background:none;
+    color:var(--ink-soft);
+    padding:10px 4px;
+    width:auto;
+    font-weight:500;
+    text-decoration:underline;
+    text-decoration-color:var(--line-strong);
+    text-underline-offset:3px;
+  }
+  .cta-block{margin-top:26px; display:flex; flex-direction:column; gap:10px; align-items:flex-start;}
+  .cta-block .btn-primary{width:100%;}
+
+  /* NPS scale */
+  .nps-grid{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:8px;
+    margin-top:22px;
+  }
+  @media (max-width:420px){
+    .nps-grid{grid-template-columns:repeat(4,1fr);}
+  }
+  .nps-btn{
+    aspect-ratio:1;
+    border-radius:12px;
+    border:1px solid var(--line-strong);
+    background:var(--surface-2);
+    font-family:"IBM Plex Mono", monospace;
+    font-weight:600;
+    font-size:1.05rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:transform .12s ease, border-color .12s ease, background .12s ease;
+  }
+  .nps-btn:hover{border-color:var(--brand-2);}
+  .nps-btn:active{transform:scale(0.94);}
+  @media (prefers-reduced-motion: reduce){ .nps-btn{transition:none;} .nps-btn:active{transform:none;} }
+  .nps-btn.picked{
+    color:#fff;
+    border-color:transparent;
+    background:linear-gradient(110deg, var(--brand-1) 0%, var(--brand-2) 50.3%, var(--brand-3) 100%);
+  }
+  .nps-scale-labels{
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
+    font-size:0.74rem;
+    color:var(--ink-faint);
+  }
+
+  /* chips */
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:16px;
+  }
+  .chip{
+    border:1px solid var(--line-strong);
+    background:var(--surface-2);
+    border-radius:999px;
+    padding:8px 14px;
+    font-size:0.85rem;
+    cursor:pointer;
+  }
+  .chip.picked{
+    background:var(--ink);
+    color:var(--bg);
+    border-color:var(--ink);
+  }
+  :root[data-theme="dark"] .chip.picked{background:var(--ink); color:var(--bg);}
+
+  textarea, input[type="text"], input[type="email"], input[type="tel"]{
+    width:100%;
+    margin-top:16px;
+    border:1px solid var(--line-strong);
+    background:var(--surface-2);
+    border-radius:12px;
+    padding:13px 14px;
+    font-family:inherit;
+    font-size:0.95rem;
+    color:var(--ink);
+    resize:vertical;
+  }
+  textarea{min-height:96px;}
+  textarea::placeholder, input::placeholder{color:var(--ink-faint);}
+  textarea:focus, input:focus{outline:2px solid var(--focus); outline-offset:1px;}
+  label.field-label{
+    display:block;
+    margin-top:16px;
+    font-size:0.8rem;
+    font-weight:500;
+    color:var(--ink-soft);
+  }
+  label.field-label input{margin-top:6px;}
+
+  .toggle-row{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    margin-top:18px;
+    padding:12px 14px;
+    background:var(--surface-2);
+    border-radius:12px;
+  }
+  .toggle-row input{margin-top:3px; width:16px; height:16px; flex-shrink:0;}
+  .toggle-row .t-text{font-size:0.85rem; color:var(--ink-soft); line-height:1.45;}
+
+  .score-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 11px;
+    border-radius:999px;
+    font-size:0.78rem;
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  .score-pill.detractor{background:var(--detractor-tint); color:var(--detractor);}
+  .score-pill.neutral{background:var(--neutral-tint); color:var(--neutral);}
+  .score-pill.promoter{background:var(--promoter-tint); color:var(--promoter);}
+
+  /* done screen */
+  .done-icon{
+    width:52px; height:52px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:16px;
+  }
+  .done-icon svg{width:24px; height:24px;}
+
+  .foot-note{
+    margin-top:28px;
+    text-align:center;
+    font-size:0.72rem;
+    color:var(--ink-faint);
+    line-height:1.5;
+  }
+
+  /* Test drawer (internal QA only) */
+  .qa-tab{
+    position:fixed;
+    left:50%;
+    bottom:calc(14px + env(safe-area-inset-bottom, 0px));
+    transform:translateX(-50%);
+    background:var(--ink);
+    color:var(--bg);
+    border:1px dashed var(--ink-faint);
+    border-radius:999px;
+    padding:8px 16px;
+    font-size:0.74rem;
+    font-weight:600;
+    letter-spacing:0.02em;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    z-index:40;
+    box-shadow:0 8px 20px -8px var(--shadow);
+  }
+  .qa-panel{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    z-index:50;
+    padding:0 16px;
+  }
+  .qa-sheet{
+    width:100%;
+    max-width:520px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:18px 18px 0 0;
+    padding:20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+    max-height:80vh;
+    overflow-y:auto;
+  }
+  .qa-sheet h3{font-size:0.95rem;}
+  .qa-sheet .sub{font-size:0.78rem; color:var(--ink-soft); margin-top:4px;}
+  .qa-group{margin-top:16px;}
+  .qa-group .lbl{font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-faint); margin-bottom:8px;}
+  .qa-btns{display:flex; flex-wrap:wrap; gap:8px;}
+  .qa-btn{
+    border:1px solid var(--line-strong);
+    background:var(--surface-2);
+    border-radius:10px;
+    padding:9px 13px;
+    font-size:0.82rem;
+    cursor:pointer;
+  }
+  .qa-btn.active{background:var(--ink); color:var(--bg); border-color:var(--ink);}
+  .qa-close{
+    margin-top:18px;
+  }
+</style>
+
+<div class="app">
+
+  <header class="top">
+    <div class="wordmark">
+      <span class="mark">Cardios</span>
+      <span class="tag">pesquisa de satisfação — protótipo</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill brand-gradient" id="progressFill" style="width:0%"></div></div>
+    <div class="step-label"><span id="stepLabel">Início</span><span id="stepCount" class="mono"></span></div>
+  </header>
+
+  <main>
+    <div class="screen" id="screen"></div>
+  </main>
+
+  <div class="foot-note">Rascunho interno para validação — Marketing Cardios</div>
+</div>
+
+<button class="qa-tab" id="qaOpen" type="button">⚙ Modo de teste</button>
+
+<div class="qa-panel" id="qaPanel" hidden>
+  <div class="qa-sheet">
+    <h3>Modo de teste</h3>
+    <div class="sub">Pula direto para qualquer caminho do fluxo, sem precisar responder de verdade. Não aparece na versão de produção.</div>
+
+    <div class="qa-group">
+      <div class="lbl">Simular link personalizado (c1 / o1)</div>
+      <div class="qa-btns">
+        <button class="qa-btn" data-seg="none" type="button">Link genérico (sem parâmetros)</button>
+        <button class="qa-btn" data-seg="holter" type="button">?c1=CLI4821&amp;o1=holter</button>
+        <button class="qa-btn" data-seg="mapa" type="button">?c1=CLI4821&amp;o1=mapa</button>
+      </div>
+    </div>
+
+    <div class="qa-group">
+      <div class="lbl">Ir direto para uma nota</div>
+      <div class="qa-btns">
+        <button class="qa-btn" data-jump="4" type="button">Nota 4 — detrator</button>
+        <button class="qa-btn" data-jump="7" type="button">Nota 7 — neutro</button>
+        <button class="qa-btn" data-jump="10" type="button">Nota 10 — promotor</button>
+      </div>
+    </div>
+
+    <div class="qa-group">
+      <div class="lbl">Navegação</div>
+      <div class="qa-btns">
+        <button class="qa-btn" data-action="restart" type="button">Reiniciar do início</button>
+        <button class="qa-btn" data-action="done" type="button">Ir para tela final</button>
+      </div>
+    </div>
+
+    <button class="btn btn-ghost qa-close" id="qaClose" type="button">Fechar</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var PRODUCTS = {
+    holter: "CardioLight (Holter)",
+    mapa: "Dyna-MAPA NG (MAPA)"
+  };
+
+  var params = new URLSearchParams(location.search);
+  var state = {
+    step: "intro",
+    score: null,
+    branch: null,
+    area: null,
+    comment: "",
+    wantsContact: false,
+    contactName: "",
+    contactInfo: "",
+    refOptIn: false,
+    segment: null
+  };
+
+  var c1 = params.get("c1");
+  var o1 = params.get("o1");
+  if (c1 && o1 && PRODUCTS[o1]) {
+    state.segment = { client: c1, product: PRODUCTS[o1] };
+  }
+
+  var screenEl = document.getElementById("screen");
+  var progressFill = document.getElementById("progressFill");
+  var stepLabel = document.getElementById("stepLabel");
+  var stepCount = document.getElementById("stepCount");
+
+  var STEP_ORDER = ["intro","q1","q2","q3","done"];
+
+  function branchOf(score){
+    if (score <= 6) return "detractor";
+    if (score <= 8) return "neutral";
+    return "promoter";
+  }
+
+  function setProgress(){
+    var idx = STEP_ORDER.indexOf(state.step);
+    var labels = {intro:"Início", q1:"Pergunta 1 de 3", q2:"Pergunta 2 de 3", q3:"Pergunta 3 de 3", done:"Concluído"};
+    stepLabel.textContent = labels[state.step] || "";
+    if (state.step === "intro"){
+      progressFill.style.width = "0%";
+      stepCount.textContent = "";
+    } else if (state.step === "done"){
+      progressFill.style.width = "100%";
+      stepCount.textContent = "";
+    } else {
+      var qIdx = ["q1","q2","q3"].indexOf(state.step) + 1;
+      progressFill.style.width = Math.round((qIdx/3)*100) + "%";
+      stepCount.textContent = qIdx + "/3";
+    }
+  }
+
+  function el(tag, attrs, children){
+    var node = document.createElement(tag);
+    attrs = attrs || {};
+    Object.keys(attrs).forEach(function(k){
+      if (k === "class") node.className = attrs[k];
+      else if (k === "html") node.innerHTML = attrs[k];
+      else if (k === "text") node.textContent = attrs[k];
+      else node.setAttribute(k, attrs[k]);
+    });
+    (children||[]).forEach(function(c){ if (c) node.appendChild(c); });
+    return node;
+  }
+
+  function render(){
+    setProgress();
+    screenEl.innerHTML = "";
+    screenEl.classList.remove("screen");
+    void screenEl.offsetWidth;
+    screenEl.classList.add("screen");
+    var builders = { intro:renderIntro, q1:renderQ1, q2:renderQ2, q3:renderQ3, done:renderDone };
+    screenEl.appendChild(builders[state.step]());
+  }
+
+  function goTo(step){ state.step = step; render(); window.scrollTo(0,0); }
+
+  // ---------- INTRO ----------
+  function renderIntro(){
+    var wrap = el("div", {class:"card intro-hero"});
+    wrap.appendChild(el("div", {class:"eyebrow", text:"Pesquisa de satisfação"}));
+    wrap.appendChild(el("h1", {text:"Sua opinião mantém a Cardios no ritmo certo."}));
+    wrap.appendChild(el("p", {text:"Três perguntas rápidas sobre a sua experiência com a Cardios. Sem cadastro obrigatório — e se você deixar uma crítica, alguém da nossa equipe te procura."}));
+
+    var meta = el("div", {class:"meta-row"});
+    meta.appendChild(el("div", {class:"meta-item"}, [el("div",{class:"n mono",text:"~60s"}), el("div",{class:"l",text:"tempo médio"})]));
+    meta.appendChild(el("div", {class:"meta-item"}, [el("div",{class:"n mono",text:"3"}), el("div",{class:"l",text:"perguntas"})]));
+    meta.appendChild(el("div", {class:"meta-item"}, [el("div",{class:"n mono",text:"0"}), el("div",{class:"l",text:"campos obrigatórios"})]));
+    wrap.appendChild(meta);
+
+    if (state.segment){
+      wrap.appendChild(el("div", {class:"context-note", text:"Preparamos esta pesquisa pensando no seu " + state.segment.product}));
+    }
+
+    var cta = el("div", {class:"cta-block"});
+    var startBtn = el("button", {class:"btn btn-primary", type:"button", text:"Responder agora"});
+    startBtn.addEventListener("click", function(){ goTo("q1"); });
+    cta.appendChild(startBtn);
+    wrap.appendChild(cta);
+
+    return wrap;
+  }
+
+  // ---------- Q1: NPS ----------
+  function renderQ1(){
+    var wrap = el("div", {class:"card"});
+    wrap.appendChild(el("div", {class:"eyebrow", text:"Pergunta 1 de 3"}));
+    wrap.appendChild(el("h2", {class:"q-title", text:"De 0 a 10, qual a probabilidade de você recomendar a Cardios para um colega?"}));
+
+    var grid = el("div", {class:"nps-grid"});
+    for (var i=0;i<=10;i++){
+      (function(n){
+        var b = el("button", {class:"nps-btn mono", type:"button", text:String(n)});
+        if (state.score === n) b.classList.add("picked");
+        b.addEventListener("click", function(){
+          state.score = n;
+          state.branch = branchOf(n);
+          goTo("q2");
+        });
+        grid.appendChild(b);
+      })(i);
+    }
+    wrap.appendChild(grid);
+    wrap.appendChild(el("div", {class:"nps-scale-labels"}, [el("span",{text:"0 · pouco provável"}), el("span",{text:"10 · certamente"})]));
+    return wrap;
+  }
+
+  // ---------- Q2: branch open comment ----------
+  var Q2_COPY = {
+    detractor: {
+      pill: "detractor", pillText: "Vamos melhorar",
+      title: "O que podemos melhorar?",
+      sub: "Conte o que aconteceu — isso vai direto para o time responsável.",
+      placeholder: "Descreva o que não funcionou bem...",
+      chips: ["Atendimento / Suporte","Assistência técnica","Equipamento","Software","Comercial","Financeiro","Outro"]
+    },
+    neutral: {
+      pill: "neutral", pillText: "Quase lá",
+      title: "O que faria você nos dar nota 9 ou 10?",
+      sub: "Sua resposta ajuda a fechar essa distância.",
+      placeholder: "O que faltou para a nota máxima...",
+      chips: ["Atendimento / Suporte","Assistência técnica","Equipamento","Software","Comercial","Financeiro","Outro"]
+    },
+    promoter: {
+      pill: "promoter", pillText: "Que ótimo",
+      title: "O que mais te agrada na Cardios?",
+      sub: "Fica à vontade — isso também ajuda a gente a manter o que funciona.",
+      placeholder: "O que você mais valoriza...",
+      chips: []
+    }
+  };
+
+  function renderQ2(){
+    var copy = Q2_COPY[state.branch];
+    var wrap = el("div", {class:"card"});
+    wrap.appendChild(el("div", {class:"eyebrow", text:"Pergunta 2 de 3"}));
+    wrap.appendChild(el("span", {class:"score-pill " + copy.pill, text:"Nota " + state.score + " · " + copy.pillText}));
+
+    var title = state.segment ? copy.title.replace("Cardios", "Cardios com o " + state.segment.product) : copy.title;
+    wrap.appendChild(el("h2", {class:"q-title", text: title}));
+    wrap.appendChild(el("p", {class:"q-sub", text: copy.sub}));
+
+    if (copy.chips.length && !state.segment){
+      var chipRow = el("div", {class:"chip-row"});
+      copy.chips.forEach(function(c){
+        var chip = el("button", {class:"chip", type:"button", text:c});
+        if (state.area === c) chip.classList.add("picked");
+        chip.addEventListener("click", function(){
+          state.area = (state.area === c) ? null : c;
+          render();
+        });
+        chipRow.appendChild(chip);
+      });
+      wrap.appendChild(chipRow);
+    }
+
+    var ta = el("textarea", {placeholder: copy.placeholder});
+    ta.value = state.comment;
+    ta.addEventListener("input", function(){ state.comment = ta.value; });
+    wrap.appendChild(ta);
+
+    var cta = el("div", {class:"cta-block"});
+    var nextBtn = el("button", {class:"btn btn-primary", type:"button", text:"Continuar"});
+    nextBtn.addEventListener("click", function(){ goTo("q3"); });
+    cta.appendChild(nextBtn);
+    var skip = el("button", {class:"btn btn-ghost", type:"button", text:"Prefiro não comentar"});
+    skip.addEventListener("click", function(){ state.comment=""; state.area=null; goTo("q3"); });
+    cta.appendChild(skip);
+    wrap.appendChild(cta);
+
+    return wrap;
+  }
+
+  // ---------- Q3: optional contact ----------
+  function renderQ3(){
+    var wrap = el("div", {class:"card"});
+    wrap.appendChild(el("div", {class:"eyebrow", text:"Pergunta 3 de 3 · opcional"}));
+
+    var title, sub, toggleText;
+    if (state.branch === "promoter"){
+      title = "Quer ser nossa referência?";
+      sub = "Se quiser, podemos te citar como depoimento ou te avisar primeiro sobre novidades.";
+      toggleText = "Aceito ser contatado(a) sobre isso";
+    } else {
+      title = "Quer que a gente retorne sobre isso?";
+      sub = "É opcional — mas se deixar contato, alguém da Cardios te procura em até 2 dias úteis.";
+      toggleText = "Quero receber um retorno sobre o que relatei";
+    }
+    wrap.appendChild(el("h2", {class:"q-title", text:title}));
+    wrap.appendChild(el("p", {class:"q-sub", text:sub}));
+
+    var toggle = el("div", {class:"toggle-row"});
+    var cb = el("input", {type:"checkbox", id:"wantsContact"});
+    cb.checked = state.wantsContact;
+    cb.addEventListener("change", function(){ state.wantsContact = cb.checked; render(); });
+    var lbl = el("label", {class:"t-text", for:"wantsContact", text:toggleText});
+    toggle.appendChild(cb); toggle.appendChild(lbl);
+    wrap.appendChild(toggle);
+
+    if (state.wantsContact){
+      var nameLabel = el("label", {class:"field-label", text:"Nome"});
+      var nameInput = el("input", {type:"text", placeholder:"Seu nome"});
+      nameInput.value = state.contactName;
+      nameInput.addEventListener("input", function(){ state.contactName = nameInput.value; });
+      nameLabel.appendChild(nameInput);
+      wrap.appendChild(nameLabel);
+
+      var infoLabel = el("label", {class:"field-label", text:"E-mail ou WhatsApp"});
+      var infoInput = el("input", {type:"text", placeholder:"seu@email.com ou (11) 90000-0000"});
+      infoInput.value = state.contactInfo;
+      infoInput.addEventListener("input", function(){ state.contactInfo = infoInput.value; });
+      infoLabel.appendChild(infoInput);
+      wrap.appendChild(infoLabel);
+    }
+
+    var cta = el("div", {class:"cta-block"});
+    var finishBtn = el("button", {class:"btn btn-primary", type:"button", text:"Enviar"});
+    finishBtn.addEventListener("click", function(){ goTo("done"); });
+    cta.appendChild(finishBtn);
+    if (!state.wantsContact){
+      var skip = el("button", {class:"btn btn-ghost", type:"button", text:"Enviar sem contato"});
+      skip.addEventListener("click", function(){ goTo("done"); });
+      cta.appendChild(skip);
+    }
+    wrap.appendChild(cta);
+
+    return wrap;
+  }
+
+  // ---------- DONE ----------
+  var DONE_COPY = {
+    detractor: {
+      tint:"detractor-tint", color:"detractor",
+      title:"Obrigado — recebemos seu retorno.",
+      body:"Sua resposta foi enviada para a equipe responsável"
+    },
+    neutral: {
+      tint:"neutral-tint", color:"neutral",
+      title:"Obrigado pela resposta!",
+      body:"Vamos usar isso para chegar mais perto da nota máxima"
+    },
+    promoter: {
+      tint:"promoter-tint", color:"promoter",
+      title:"Muito obrigado!",
+      body:"Ficamos felizes que a experiência tem sido boa"
+    }
+  };
+
+  function renderDone(){
+    var branch = state.branch || "promoter";
+    var copy = DONE_COPY[branch];
+    var wrap = el("div", {class:"card"});
+
+    var icon = el("div", {class:"done-icon " + copy.tint});
+    icon.style.background = "var(--" + copy.color + "-tint)";
+    var svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+    svg.setAttribute("viewBox","0 0 24 24");
+    svg.setAttribute("fill","none");
+    var path = document.createElementNS("http://www.w3.org/2000/svg","path");
+    path.setAttribute("d","M4 12.5l5 5L20 6.5");
+    path.setAttribute("stroke","var(--" + copy.color + ")");
+    path.setAttribute("stroke-width","2.4");
+    path.setAttribute("stroke-linecap","round");
+    path.setAttribute("stroke-linejoin","round");
+    svg.appendChild(path);
+    icon.appendChild(svg);
+    wrap.appendChild(icon);
+
+    wrap.appendChild(el("h2", {class:"q-title", text:copy.title}));
+
+    var bodyText = copy.body;
+    if (state.area) bodyText += " (" + state.area + ")";
+    bodyText += ".";
+    if (state.wantsContact && (state.contactName || state.contactInfo)){
+      bodyText += " Como você pediu retorno, alguém da Cardios entra em contato em até 2 dias úteis.";
+    } else if (branch !== "promoter"){
+      bodyText += " Você optou por não deixar contato, então não haverá retorno individual — mas o time interno vê o seu comentário.";
+    }
+    wrap.appendChild(el("p", {class:"q-sub", text:bodyText}));
+
+    var again = el("div", {class:"cta-block"});
+    var restart = el("button", {class:"btn btn-ghost", type:"button", text:"Ver o fluxo desde o início"});
+    restart.addEventListener("click", function(){ resetState(); goTo("intro"); });
+    again.appendChild(restart);
+    wrap.appendChild(again);
+
+    return wrap;
+  }
+
+  function resetState(){
+    state.step="intro"; state.score=null; state.branch=null; state.area=null;
+    state.comment=""; state.wantsContact=false; state.contactName=""; state.contactInfo=""; state.refOptIn=false;
+  }
+
+  // ---------- QA drawer ----------
+  var qaOpen = document.getElementById("qaOpen");
+  var qaPanel = document.getElementById("qaPanel");
+  var qaClose = document.getElementById("qaClose");
+  qaOpen.addEventListener("click", function(){ qaPanel.hidden = false; });
+  qaClose.addEventListener("click", function(){ qaPanel.hidden = true; });
+  qaPanel.addEventListener("click", function(e){ if (e.target === qaPanel) qaPanel.hidden = true; });
+
+  qaPanel.querySelectorAll("[data-seg]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var seg = b.getAttribute("data-seg");
+      state.segment = (seg === "none") ? null : { client:"CLI4821", product: PRODUCTS[seg] };
+      qaPanel.hidden = true;
+      goTo(state.step === "intro" ? "intro" : state.step);
+    });
+  });
+  qaPanel.querySelectorAll("[data-jump]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var n = parseInt(b.getAttribute("data-jump"),10);
+      state.score = n; state.branch = branchOf(n);
+      qaPanel.hidden = true;
+      goTo("q2");
+    });
+  });
+  qaPanel.querySelectorAll("[data-action]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var action = b.getAttribute("data-action");
+      qaPanel.hidden = true;
+      if (action === "restart"){ resetState(); goTo("intro"); }
+      if (action === "done"){ if (!state.branch){ state.branch="promoter"; state.score=10; } goTo("done"); }
+    });
+  });
+
+  render();
+})();
+</script>
